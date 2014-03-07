@@ -1,4 +1,5 @@
-// nsIWebProgressListener implementation to monitor activity in the browser.
+const WEB_IP = '127.0.0.1:8080'
+
 function WebProgressListener() {}
 WebProgressListener.prototype = {
     _requestsStarted: 0,
@@ -147,7 +148,7 @@ function showConsole() {
 
 function onload() {
     var urlbar = document.getElementById("urlbar");
-    urlbar.value = "http://127.0.0.1/";
+    urlbar.value = WEB_IP;
 
     listener = new WebProgressListener();
 

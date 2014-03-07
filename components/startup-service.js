@@ -1,6 +1,6 @@
-const WEB_URI = 'www\\Public';
-const WEB_ROUTER = WEB_URI + '\\.webserver.php';
-const WEB_IP = '127.0.0.1:80'
+const WEB_URI = 'www';
+const WEB_ROUTER = '';
+const WEB_IP = '127.0.0.1:8080'
 const Cc = Components.classes;
 const Ci = Components.interfaces;
 const Cu = Components.utils;
@@ -123,8 +123,8 @@ StartupService.prototype = {
 
     quit: function() {
 
-        this.kill('pid\\php.pid'); // TODO Bug keep here :(
-
+        //this.kill('pid\\php.pid'); // TODO Bug keep here :(
+        this.cmd('taskkill /f /IM php.exe');
 
 
         Services.obs.addObserver(this, 'quit-application-granted', false);
