@@ -1,0 +1,5 @@
+content myapp file:chrome/content/
+locale myapp en-US file:chrome/locale/en-US/
+component {71a88d9e-db4b-43ee-8a8a-50c1f3fe164e} components/startup-service.js
+contract @hoa-project.net/startup-service;1 {71a88d9e-db4b-43ee-8a8a-50c1f3fe164e}
+category profile-after-change StartupService @hoa-project.net/startup-service;1
