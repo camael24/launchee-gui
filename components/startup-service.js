@@ -89,6 +89,8 @@ StartupService.prototype = {
 
         var pid = sstream.read(sstream.available());
 
+        log('Kill pid ' + pid);
+
         sstream.close();
         fstream.close();
 
