@@ -110,8 +110,7 @@ StartupService.prototype = {
 
 
 
-        this.launch('php\\php-cgi.exe -b 127.0.0.1:9000', 'pid\\php.pid');
-        this.launch('nginx\\nginx.exe -p nginx')
+        this.launch('php\\php.exe -S 127.0.0.1:80 -t www', 'pid\\php.pid');
 
         Services.obs.addObserver(this, 'quit-application-granted', false);
 
@@ -121,8 +120,8 @@ StartupService.prototype = {
 
     quit: function() {
 
-        this.launch('nginx\\nginx.exe -p nginx -s quit')
-        this.kill('pid\\php.pid');
+        this.kill('pid\\php.pid'); // TODO Bug keep here :(
+
 
 
         Services.obs.addObserver(this, 'quit-application-granted', false);
