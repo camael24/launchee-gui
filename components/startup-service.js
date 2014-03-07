@@ -1,3 +1,6 @@
+const WEB_URI = 'www\\Public';
+const WEB_ROUTER = WEB_URI + '\\.webserver.php';
+const WEB_IP = '127.0.0.1:80'
 const Cc = Components.classes;
 const Ci = Components.interfaces;
 const Cu = Components.utils;
@@ -110,7 +113,7 @@ StartupService.prototype = {
 
 
 
-        this.launch('php\\php.exe -S 127.0.0.1:80 -t www', 'pid\\php.pid');
+        this.launch('php\\php.exe -S ' + WEB_IP + ' -t ' + WEB_URI + ' ' + WEB_ROUTER, 'pid\\php.pid');
 
         Services.obs.addObserver(this, 'quit-application-granted', false);
 
