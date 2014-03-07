@@ -21,27 +21,95 @@ function StartupService() {}
 
 StartupService.prototype = {
 
-    launch: function(bin) {
+    _root: null,
+    _server: null,
+
+    init: function() {
+
         var process = Cc['@mozilla.org/process/util;1'];
-        this._server = process.createInstance(Ci.nsIProcess);
-        var root = Cc['@mozilla.org/file/directory_service;1']
-            .getService(Ci.nsIProperties)
-            .get('CurProcD', Ci.nsILocalFile)
-            .path;
+        var server = process.createInstance(Ci.nsIProcess);
         var file = Cc['@mozilla.org/file/local;1'];
         var handler = file.createInstance(Ci.nsILocalFile);
-        var exe = root + '\\wnmp\\' + bin;
-        var args = [];
+        var exe = this._root + '\\start.vbs';
 
         handler.initWithPath(exe);
-        this._server.init(handler);
-        this._server.runAsync(args, args.length);
+        server.init(handler);
+
+        return server;
     },
+
+
+    launch: function(bin) {
+        var args = [
+            this._root + '\\' + bin,
+            this._root
+        ];
+
+        this.init().runAsync(args, args.length);
+    },
+    launch: function(bin, pid) {
+        var args = [
+            this._root + '\\' + bin,
+            this._root,
+            pid
+        ];
+
+        this.init().runAsync(args, args.length);
+    },
+    cmd: function(bin) {
+
+        var args = [
+            'C:\\Windows\\System32\\cmd.exe /C ' + bin,
+            this._root
+        ];
+
+        this.init().runAsync(args, args.length);
+
+    },
+
+    kill: function(pidFile) {
+
+        var filePath = this._root + "\\" + pidFile;
+
+        var file = Components.classes["@mozilla.org/file/local;1"]
+            .createInstance(Components.interfaces.nsILocalFile);
+
+        var fstream = Components.classes["@mozilla.org/network/file-input-stream;1"]
+            .createInstance(Components.interfaces.nsIFileInputStream);
+        var sstream = Components.classes["@mozilla.org/scriptableinputstream;1"]
+            .createInstance(Components.interfaces.nsIScriptableInputStream);
+
+        file.initWithPath(filePath);
+        if (file.exists() == false) {
+            log("File does not exist");
+        }
+
+        fstream.init(file, 0x01, 00004, null);
+        sstream.init(fstream);
+
+        var pid = sstream.read(sstream.available());
+
+        sstream.close();
+        fstream.close();
+
+        this.cmd('taskkill /pid ' + pid);
+
+    },
+
+
+
     setup: function() {
         log('************* SETUP');
 
+        this._root = Cc['@mozilla.org/file/directory_service;1']
+            .getService(Ci.nsIProperties)
+            .get('CurProcD', Ci.nsILocalFile)
+            .path;
 
-        this.launch('serve.vbs')
+
+
+        this.launch('php\\php-cgi.exe -b 127.0.0.1:9000', 'pid\\php.pid');
+        this.launch('nginx\\nginx.exe -p nginx')
 
         Services.obs.addObserver(this, 'quit-application-granted', false);
 
@@ -51,7 +119,9 @@ StartupService.prototype = {
 
     quit: function() {
 
-        this.launch('stop.vbs')
+        this.launch('nginx\\nginx.exe -p nginx -s quit')
+        this.kill('pid\\php.pid');
+
 
         Services.obs.addObserver(this, 'quit-application-granted', false);
         log('************* QUIT');

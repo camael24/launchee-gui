@@ -3,3 +3,4 @@ php/*
 xulrunner/*
 wnmp/*
 *.exe
+*.pid
