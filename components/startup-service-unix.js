@@ -22,6 +22,16 @@ function StartupService() {}
 
 StartupService.prototype = {
 
+    _cmd: function (process, args){
+        
+    },
+
+    fpm: function () {
+
+    },
+    http: function() {
+
+    },
     setup: function() {
         log('setup');
     },
