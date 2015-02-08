@@ -1,4 +1,4 @@
-const WEB_IP = '127.0.0.1:8080'
+const WEB_IP = 'http://ark.im/'
 
 function WebProgressListener() {}
 WebProgressListener.prototype = {
